@@ -1,0 +1,84 @@
+{
+  "code": 0,
+  "msg": "ok",
+  "count": 7,
+  "data": [
+    {
+      "id": 1,
+      "parentId": -1,
+      "type": 0,
+      "name": "研真科技",
+      "status": 0,
+      "sort": 1,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    },
+    {
+      "id": 2,
+      "parentId": 1,
+      "type": 1,
+      "name": "IT部",
+      "status": 0,
+      "sort": 2,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    },
+    {
+      "id": 3,
+      "parentId": 2,
+      "type": 2,
+      "name": "研发组",
+      "status": 0,
+      "sort": 3,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    },
+    {
+      "id": 36,
+      "parentId": 1,
+      "type": 1,
+      "name": "测试部门999",
+      "status": 0,
+      "sort": 4,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    },
+    {
+      "id": 37,
+      "parentId": 36,
+      "type": 2,
+      "name": "测试小组01",
+      "status": 1,
+      "sort": 2,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    },
+    {
+      "id": 42,
+      "parentId": 36,
+      "type": 2,
+      "name": "测试部门02",
+      "status": 1,
+      "sort": 2,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    },
+    {
+      "id": 43,
+      "parentId": 1,
+      "type": 1,
+      "name": "测试小组01",
+      "status": 0,
+      "sort": 1,
+      "createBy": null,
+      "createTime": null,
+      "updateTime": null
+    }
+  ]
+}

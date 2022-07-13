@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tn.permission.dao.IRoleDao">
+
+    <!-- resultMap最终还是要将结果映射到pojo上，type就是指定映射到哪一个pojo -->
+    <!-- id：设置ResultMap的id -->
+    <resultMap id="roleResultMap" type="com.tn.permission.po.Role" >
+        <!-- 定义主键 ,非常重要。如果是多个字段,则定义多个id -->
+        <!-- property：主键在pojo中的属性名 -->
+        <!-- column：主键在数据库中的列名 -->
+        <id property="id" column="id" />
+
+        <!-- 定义普通属性 -->
+        <result property="id" column="id" />
+        <result property="parentId" column="parent_id" />
+        <result property="name" column="name" />
+        <result property="type" column="type" />
+        <result property="remarks" column="remarks" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+
+    </resultMap>
+
+    <select id="queryRoleAll" resultMap="roleResultMap">
+        select * from role
+    </select>
+
+    <!--添加功能-->
+    <insert id="addRole" parameterType="com.tn.permission.po.Role">
+        insert into role (parent_id, name, remarks, type, create_time) values
+        (#{parentId}, #{name}, #{remarks}, #{type}, #{createTime})
+    </insert>
+
+    <!--删除操作：根据id删除节点以及下面的子节点-->
+    <delete id="deleteRoleById" parameterType="int">
+        DELETE FROM role WHERE id = #{id} or id = (select id from (
+            SELECT t1.id, IF(FIND_IN_SET(parent_id, @pids) > 0, @pids := CONCAT(@pids, ',', id), 0) AS ischild
+            FROM (SELECT id,parent_id FROM dept t WHERE t.status = 1 ORDER BY parent_id, id) t1,
+            (SELECT @pids := #{id}) t2) t3 where ischild != 0)
+    </delete>
+
+    <!--根据id查询记录信息-->
+    <select id="queryRoleById" parameterType="int" resultMap="roleResultMap">
+        select * from role where id=#{id}
+    </select>
+
+    <!--修改菜单实现-->
+    <update id="updateRoleSubmit" parameterType="com.tn.permission.po.Role">
+        update role
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="remarks!=null">
+                remarks=#{remarks},
+            </if>
+            <if test="updateTime!=null">
+                updateTime=#{updateTime},
+            </if>
+        </set>
+            where id=#{id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tn.permission.dao.IDeptDao">
+
+    <!-- resultMap最终还是要将结果映射到pojo上，type就是指定映射到哪一个pojo -->
+    <!-- id：设置ResultMap的id -->
+    <resultMap id="deptResultMap" type="com.tn.permission.po.Dept" >
+        <!-- 定义主键 ,非常重要。如果是多个字段,则定义多个id -->
+        <!-- property：主键在pojo中的属性名 -->
+        <!-- column：主键在数据库中的列名 -->
+        <id property="id" column="id" />
+
+        <!-- 定义普通属性 -->
+        <result property="id" column="id" />
+        <result property="parentId" column="parent_id" />
+        <result property="name" column="name" />
+        <result property="type" column="type" />
+        <result property="sort" column="sort" />
+        <result property="status" column="status" />
+        <result property="updateTime" column="update_time" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+<!--    查询所有的部门信息-->
+    <select id="queryDeptAll" resultMap="deptResultMap">
+        select * from dept
+    </select>
+
+    <!--添加部门信息-->
+    <insert id="addDept" parameterType="com.tn.permission.po.Dept">
+        insert into dept (parent_id, name, type, sort, status, create_time) value (#{parentId}, #{name}, #{type}, #{sort}, #{status}, #{createTime})
+    </insert>
+
+    <!--根据id查询部门信息-->
+    <select id="update" resultMap="deptResultMap" parameterType="int">
+        select * from dept where id=#{id}
+    </select>
+
+    <!--修改部门信息-->
+    <update id="updateDept" parameterType="com.tn.permission.po.Dept">
+        update dept set name=#{name}, sort=#{sort}, status=#{status} where id=#{id}
+    </update>
+
+    <!--删除操作：根据id删除节点以及下面的子节点-->
+    <delete id="deleteDeptById" parameterType="int">
+        DELETE FROM dept WHERE id = #{id} or id = (select id from (
+            SELECT t1.id, IF(FIND_IN_SET(parent_id, @pids) > 0, @pids := CONCAT(@pids, ',', id), 0) AS ischild
+            FROM (SELECT id,parent_id FROM dept t WHERE t.status = 1 ORDER BY parent_id, id) t1,
+            (SELECT @pids := #{id}) t2) t3 where ischild != 0)
+    </delete>
+
+
+</mapper>

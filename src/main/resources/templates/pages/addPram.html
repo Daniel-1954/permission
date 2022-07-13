@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>添加关联角色权限</title>
+  <link rel="stylesheet" th:href="@{lib/layui-v2.5.5/css/layui.css}" media="all">
+  <link rel="stylesheet" th:href="@{css/public.css}" media="all">
+  <style>
+    body {
+      background-color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+<script th:src="@{lib/layui-v2.5.5/layui.js}" charset="utf-8"></script>
+<script th:src="@{lib/jquery-3.4.1/jquery-3.4.1.min.js}" charset="utf-8"></script>
+
+<input type="text" id="roleId" th:value="${roleId}">
+<div id="test12" class="demo-tree-more"></div>
+<div class="layui-btn-container">
+  <button type="button" class="layui-btn layui-btn-sm">设置权限</button>
+</div>
+<script>
+  layui.use(['tree', 'util'], function(){
+    //获取树的数据信息
+    var data2 = getFormInfo();
+    var tree = layui.tree
+            ,layer = layui.layer
+            ,util = layui.util
+
+            ,data = data2
+
+            //模拟数据
+            // ,data = [{
+            //   title: '早餐'
+            //   ,id: 1
+            //   ,children: [{
+            //     title: '油条'
+            //     ,id: 5
+            //   },{
+            //     title: '包子'
+            //     ,id: 6
+            //   },{
+            //     title: '豆浆'
+            //     ,id: 7
+            //   }]
+            // },{
+            //   title: '午餐'
+            //   ,id: 2
+            //   ,checked: true
+            //   ,children: [{
+            //     title: '藜蒿炒腊肉'
+            //     ,id: 8
+            //   },{
+            //     title: '西湖醋鱼'
+            //     ,id: 9
+            //   },{
+            //     title: '小白菜'
+            //     ,id: 10
+            //   },{
+            //     title: '海带排骨汤'
+            //     ,id: 11
+            //   }]
+            // },{
+            //   title: '晚餐'
+            //   ,id: 3
+            //   ,children: [{
+            //     title: '红烧肉'
+            //     ,id: 12
+            //     ,fixed: true
+            //   },{
+            //     title: '番茄炒蛋'
+            //     ,id: 13
+            //   }]
+            // },{
+            //   title: '夜宵'
+            //   ,id: 4
+            //   ,children: [{
+            //     title: '小龙虾'
+            //     ,id: 14
+            //     ,checked: true
+            //   },{
+            //     title: '香辣蟹'
+            //     ,id: 15
+            //     ,disabled: true
+            //   },{
+            //     title: '烤鱿鱼'
+            //     ,id: 16
+            //   }]
+            // }];
+
+    //基本演示
+    tree.render({
+      elem: '#test12'
+      ,data: data
+      ,showCheckbox: true  //是否显示复选框
+      ,id: 'demoId1'
+      ,isJump: true //是否允许点击节点时弹出新窗口跳转
+      ,click: function(obj){
+        var data = obj.data;  //获取当前点击的节点数据
+        layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(data));
+      }
+    });
+
+    //获取树信息动态
+    function getFormInfo() {
+      //获取角色的id
+      var roleId=$("#roleId").val();
+      var content={};
+      $.ajax({
+        url:'menu/queryMenuTree',
+        type:'POST',
+        data:{id:roleId},
+        async:false, //必须设置false，同步请求，否则无效
+        dataType:'json',
+        success:function(datas) {
+          content=datas;  //把请求到的数据给变量
+        }
+      });
+      return content;
+    }
+
+    //按钮事件
+    util.event('lay-demo', {
+      getChecked: function(othis){
+        var checkedData = tree.getChecked('demoId1'); //获取选中节点的数据
+
+        layer.alert(JSON.stringify(checkedData), {shade:0});
+        console.log(checkedData);
+      }
+      ,setChecked: function(){
+        tree.setChecked('demoId1', [12, 16]); //勾选指定节点
+      }
+      ,reload: function(){
+        //重载实例
+        tree.reload('demoId1', {
+
+        });
+
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
